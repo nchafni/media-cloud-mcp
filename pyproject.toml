@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "media-cloud-mcp"
+dynamic = ["version"]
+description = "MCP server for Media Cloud: measure news attention, list stories, and browse media sources and collections."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+# mediacloud parses the API's timestamps with datetime.fromisoformat, which only
+# accepts the full ISO 8601 range from Python 3.11 on.
+requires-python = ">=3.11"
+keywords = ["mcp", "model-context-protocol", "mediacloud", "media-analysis", "news", "journalism"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Sociology",
+    "Typing :: Typed",
+]
+dependencies = [
+    "mcp>=2.3,<3",
+    "mediacloud>=5.2,<6",
+    "requests>=2,<3",
+]
+
+[project.urls]
+Repository = "https://github.com/nchafni/media-cloud-mcp"
+Issues = "https://github.com/nchafni/media-cloud-mcp/issues"
+
+[project.scripts]
+media-cloud-mcp = "media_cloud_mcp.server:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "anyio>=4.9",
+    "ruff>=0.8",
+]
+
+[tool.hatch.version]
+path = "src/media_cloud_mcp/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/media_cloud_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "README.md", "LICENSE", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # The client warns on unscoped queries. They are legal, and the tests use them.
+    "ignore:No sources or collections specified",
+]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
